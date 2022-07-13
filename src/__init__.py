@@ -1,6 +1,7 @@
 import enum
 import sys
 import requests
+import argparse
 
 from telebot import TeleBot
 from telebot.types import *
@@ -164,9 +165,14 @@ class Bot:
         self.bot.infinity_polling()
 
 
-def main(args):
-    token = args[1]
-    bot = Bot(token, Provider("http://localhost:8080"))
+def main(argv):
+    parser = argparse.ArgumentParser(description="TeleBot for interaction with GeoNote. Work in progress.")
+    parser.add_argument("--host", help="server address in format like http://example.com or http://ip:port",
+                        default="http://localhost:8080")
+    parser.add_argument("token", help="token for telegram bot api to authorise")
+
+    args = parser.parse_args(argv[1::])
+    bot = Bot(args.token, Provider(args.host))
     bot.start()
 
 
