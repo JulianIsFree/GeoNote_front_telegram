@@ -83,6 +83,9 @@ class Bot:
     def setup(self):
         bot = self.bot
 
+        #######################################################################################
+        # Pagination for checking out my_notes
+
         @bot.middleware_handler(update_types=['message'])
         def init_user_info_if_required(_, msg: Message):
             user = msg.from_user.id
@@ -105,7 +108,8 @@ class Bot:
             paginator = InlineKeyboardPaginator(len(notes), current_page=page, data_pattern='character#{page}')
             bot.send_message(chat, notes[page - 1], reply_markup=paginator.markup)
 
-        ########
+        #######################################################################################
+        # Other logic: saving notes, posting
 
         @bot.message_handler(commands=['start'], func=lambda msg: self.user_info[msg.from_user.id].state == State.WAIT)
         def on_start(msg: Message):
@@ -155,7 +159,6 @@ class Bot:
             self.provider.post_without_geo(user, text)
             self.user_info[user].set_state(State.WAIT)
             bot.reply_to(msg, "Done", reply_markup=ReplyKeyboardRemove())
-
 
     def start(self):
         self.bot.infinity_polling()
